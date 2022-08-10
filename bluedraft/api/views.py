@@ -34,3 +34,14 @@ class CoinAPI(APIView):
             return Response({'message': "Error: coin not added"}, status=status.HTTP_400_BAD_REQUEST)
         serializer = CoinSerializer(coin)
         return Response({'message': "Success", 'coin': serializer.data}, status=status.HTTP_200_OK)
+
+    @api_login_required
+    def delete(self, request, id, *args, **kwargs):
+        try:
+            coin = Coin.objects.get(id=id)
+        except:
+            return Response({'message': "Error: coin not found..."}, status=status.HTTP_404_NOT_FOUND)
+        
+        Coin.objects.filter(id=id).delete()
+        serializer = CoinSerializer(coin)
+        return Response({'message': "Success", 'coin': serializer.data}, status=status.HTTP_202_ACCEPTED)
