@@ -36,6 +36,18 @@ class CoinAPI(APIView):
         return Response({'message': "Success", 'coin': serializer.data}, status=status.HTTP_200_OK)
 
     @api_login_required
+    def put(self, request, id, *args, **kwargs):
+        try:
+            coin = Coin.objects.get(id=id)
+        except:
+            return Response({'message': "Error: coin not found..."}, status=status.HTTP_404_NOT_FOUND)
+        
+        coin.name = request.data['name']
+        coin.save()
+        serializer = CoinSerializer(coin)
+        return Response({'message': "Success", 'coin': serializer.data}, status=status.HTTP_200_OK)
+
+    @api_login_required
     def delete(self, request, id, *args, **kwargs):
         try:
             coin = Coin.objects.get(id=id)

@@ -1,9 +1,10 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 
 class Coin(models.Model):
-    name = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=50)
     date_created = models.DateTimeField(editable=False)
     date_updated = models.DateTimeField()
 
