@@ -13,3 +13,9 @@ class Coin(models.Model):
             self.date_created = timezone.now()
         self.date_updated = timezone.now()
         return super(Coin, self).save(*args, **kwargs)
+
+
+class Wallet(models.Model):
+    name = models.CharField(max_length=50)
+    coin = models.ForeignKey(Coin, on_delete=models.CASCADE, blank=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)

@@ -1,6 +1,7 @@
 from unicodedata import name
-from .models import Coin
-from .serializers import CoinSerializer
+from .models import Coin, Wallet
+from django.contrib.auth.models import User
+from .serializers import CoinSerializer, WalletSerializer
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
@@ -18,7 +19,7 @@ class CoinAPI(APIView):
     def get(self, request, *args, **kwargs):
         try:
             if request.GET.get('name'):
-                coins = Coin.objects.get(name__icontains=request.GET.get('name'))
+                coins = Coin.objects.filter(name__icontains=request.GET.get('name')).values()
             else:
                 coins = Coin.objects.all()
             serializer = CoinSerializer(coins, many=True)
@@ -57,3 +58,23 @@ class CoinAPI(APIView):
         Coin.objects.filter(id=id).delete()
         serializer = CoinSerializer(coin)
         return Response({'message': "Success", 'coin': serializer.data}, status=status.HTTP_202_ACCEPTED)
+
+
+class WalletAPI(APIView):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    @api_login_required
+    def get(self, request, *args, **kwargs):
+        token = request.COOKIES['jwt']
+        try:
+            user = User.objects.get(id=request.GET.get('id'))
+            wallet = Wallet.objects.get(user=user)
+            serializer = WalletSerializer(wallet)
+            return Response({'message': "Success", 'wallet': serializer.data}, status=status.HTTP_200_OK)
+        except:
+            return Response({'message': "Error: wallet not found..."}, status=status.HTTP_404_NOT_FOUND)
+
+    def post(self, request, *args, **kwargs):
+        pass

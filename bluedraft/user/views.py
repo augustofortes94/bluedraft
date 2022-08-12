@@ -44,4 +44,4 @@ class APIRegister(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({'message': 'succes'}, status=status.HTTP_200_OK)
+        return Response({'message': 'Succes'}, status=status.HTTP_200_OK)
