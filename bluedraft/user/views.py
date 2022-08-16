@@ -1,5 +1,6 @@
 import datetime
 import jwt
+import os
 from .serializers import RegisterSerializer
 from django.contrib.auth.models import User
 from django.utils.decorators import method_decorator
@@ -29,7 +30,7 @@ class ApiLogin(APIView):
                     'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
                     'iat': datetime.datetime.utcnow()
                     }
-            token = jwt.encode(payload, 'secret', algorithm='HS256')
+            token = jwt.encode(payload, os.getenv('SECRET_KEY'), algorithm='HS256')
 
             response = Response()
             response.set_cookie(key='jwt', value=token, httponly=True)
