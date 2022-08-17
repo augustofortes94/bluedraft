@@ -33,6 +33,10 @@ class CoinAPI(APIView):
     @api_login_required
     def post(self, request, *args, **kwargs):
         try:
+            wallet = Wallet.objects.get(id=request.data['wallet'])
+            coin = Coin.objects.create(name=request.data['name'], wallet=wallet)
+        except Wallet.DoesNotExist:
+            print('primer except')
             coin = Coin.objects.create(name=request.data['name'])
         except ValidationErr:
             return Response({'message': "Error: coin not added"}, status=status.HTTP_400_BAD_REQUEST)
@@ -42,12 +46,16 @@ class CoinAPI(APIView):
     @api_login_required
     def put(self, request, id, *args, **kwargs):
         try:
+            wallet = Wallet.objects.get(id=request.data['wallet'])
             coin = Coin.objects.get(id=id)
-        except Coin.DoesNotExist:
-            return Response({'message': "Error: coin not found..."}, status=status.HTTP_404_NOT_FOUND)
+            coin.wallet = wallet
+        except Wallet.DoesNotExist:
+            try:
+                coin = Coin.objects.get(id=id)
+            except Coin.DoesNotExist:
+                return Response({'message': "Error: coin not found..."}, status=status.HTTP_404_NOT_FOUND)
 
         coin.name = request.data['name']
-        coin.wallet = Wallet.objects.get(id=3)
         coin.save()
         serializer = CoinSerializer(coin)
         return Response({'message': "Success", 'coin': serializer.data}, status=status.HTTP_200_OK)
