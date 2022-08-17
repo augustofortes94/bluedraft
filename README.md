@@ -25,5 +25,6 @@ Endpoints:
         - POST User Register: http://localhost:8000/api/register/
         - POST User Login: http://localhost:8000/api/login/
 
-Se deja en el repositorio una archivo .json en el cual se puede encontrar una coleccion de metedos de Postman para poder probar mejor los endpoints.
+POSTMAN:
+Se deja en el repositorio una archivo .json (importar en postman) en el cual se puede encontrar una coleccion de metedos de Postman para poder probar mejor los endpoints.
 Los mismos metodos dentro contienen los body correspondientes a enviar a la api para que esta funcione correctamente.
