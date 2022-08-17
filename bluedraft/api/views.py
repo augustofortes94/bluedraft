@@ -1,4 +1,3 @@
-from ast import Delete
 from xml.dom import ValidationErr
 import jwt
 import os
@@ -77,7 +76,6 @@ class WalletAPI(APIView):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
-
     @api_login_required
     def get(self, request, *args, **kwargs):
         token = jwt.decode(request.COOKIES['jwt'], os.getenv('SECRET_KEY'), algorithms=['HS256'])
@@ -87,7 +85,6 @@ class WalletAPI(APIView):
         except Wallet.DoesNotExist:
             return Response({'message': "Error: wallet not found..."}, status=status.HTTP_404_NOT_FOUND)
         return Response({'message': "Success", 'wallet': serializer.data}, status=status.HTTP_200_OK)
-
 
     @api_login_required
     def post(self, request, *args, **kwargs):
@@ -105,7 +102,6 @@ class WalletAPI(APIView):
         serializer = WalletSerializer(wallet)
         return Response({'message': "Success", 'wallet': serializer.data}, status=status.HTTP_200_OK)
 
-
     @api_login_required
     def delete(self, request, *args, **kwargs):
         token = jwt.decode(request.COOKIES['jwt'], os.getenv('SECRET_KEY'), algorithms=['HS256'])
@@ -116,7 +112,6 @@ class WalletAPI(APIView):
         Wallet.objects.filter(user__id=token['id']).delete()
         serializer = WalletSerializer(wallet)
         return Response({'message': "Success", 'wallet': serializer.data}, status=status.HTTP_202_ACCEPTED)
-
 
     @api_login_required
     def sendCoins(self, request, data, user_id, *args, **kwargs):
@@ -134,6 +129,3 @@ class WalletAPI(APIView):
             return Response({'message': "Error: transfer not made..."}, status=status.HTTP_401_UNAUTHORIZED)
         serializer = serializer = WalletSerializer(wallet)
         return Response({'message': "Success", 'wallet': serializer.data}, status=status.HTTP_202_ACCEPTED)
-
-
-

@@ -15,7 +15,7 @@ class CoinShortSerializer(serializers.ModelSerializer):
 
 
 class WalletSerializer(serializers.ModelSerializer):
-    coins = CoinShortSerializer(read_only=True, many=True)    
+    coins = CoinShortSerializer(read_only=True, many=True)
 
     class Meta:
         model = Wallet
