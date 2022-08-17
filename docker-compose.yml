@@ -15,6 +15,8 @@ services:
       - DATABASE_USER=${DATABASE_USER}
       - DATABASE_PSW=${DATABASE_PSW}
       - DATABASE_NAME=${DATABASE_NAME}
+      - DEBUG_MODE=${DEBUG_MODE}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
     container_name: bluedraft-app
     command: python bluedraft/manage.py runserver 0.0.0.0:8000
     networks:
@@ -32,6 +34,8 @@ services:
       - DATABASE_USER=${DATABASE_USER}
       - DATABASE_PSW=${DATABASE_PSW}
       - DATABASE_NAME=${DATABASE_NAME}
+      - DEBUG_MODE=${DEBUG_MODE}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
     command: python bluedraft/manage.py migrate
     networks:
       - localnetwork
