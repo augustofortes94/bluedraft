@@ -73,10 +73,8 @@ class WalletAPI(APIView):
         #try:
         user = User.objects.get(id=token['id'])
         wallet = Wallet.objects.get(user=user)
-        coins = Coin.objects.filter(wallet=wallet)
-        print(coins)
+        #coins = Coin.objects.filter(wallet=wallet)
 
-        coinserilizer = CoinSerializer(coins, many=True)
         serializer = WalletSerializer(wallet)
         return Response({'message': "Success", 'wallet': serializer.data}, status=status.HTTP_200_OK)
         #except:
