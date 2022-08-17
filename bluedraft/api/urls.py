@@ -11,4 +11,5 @@ urlpatterns = [
     path('api/register/', APIRegister.as_view(), name='api_register'),
     path('api/wallet/', WalletAPI.as_view(), name='api_wallet'),
     path('api/wallet/<int:id>', WalletAPI.as_view(), name='api_wallet_by_id'),
+    path('api/wallet/send/', WalletAPI.as_view(), name='api_wallet'),
 ]

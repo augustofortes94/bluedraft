@@ -67,21 +67,24 @@ class WalletAPI(APIView):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
+
     @api_login_required
     def get(self, request, *args, **kwargs):
         token = jwt.decode(request.COOKIES['jwt'], os.getenv('SECRET_KEY'), algorithms=['HS256'])
-        #try:
-        user = User.objects.get(id=token['id'])
-        wallet = Wallet.objects.get(user=user)
-        #coins = Coin.objects.filter(wallet=wallet)
-
-        serializer = WalletSerializer(wallet)
+        try:
+            user = User.objects.get(id=token['id'])
+            wallet = Wallet.objects.get(user=user)
+            serializer = WalletSerializer(wallet)
+        except:
+            return Response({'message': "Error: wallet not found..."}, status=status.HTTP_404_NOT_FOUND)
         return Response({'message': "Success", 'wallet': serializer.data}, status=status.HTTP_200_OK)
-        #except:
-        return Response({'message': "Error: wallet not found..."}, status=status.HTTP_404_NOT_FOUND)
 
+
+    @api_login_required
     def post(self, request, *args, **kwargs):
         token = jwt.decode(request.COOKIES['jwt'], os.getenv('SECRET_KEY'), algorithms=['HS256'])
+        if 'send' in request.path:
+            return self.sendCoins(self, request.data, token['id'])
         try:
             user = User.objects.get(id=token['id'])
             wallet = Wallet.objects.create(
@@ -92,3 +95,24 @@ class WalletAPI(APIView):
             return Response({'message': "Error: wallet not added..."}, status=status.HTTP_404_NOT_FOUND)
         serializer = WalletSerializer(wallet)
         return Response({'message': "Success", 'wallet': serializer.data}, status=status.HTTP_200_OK)
+
+
+    @api_login_required
+    def sendCoins(self, request, data, user_id, *args, **kwargs):
+        try:
+            user = User.objects.get(id=user_id)
+            wallet = Wallet.objects.get(user=user)
+            coins = Coin.objects.filter(wallet=wallet, name=data['coin'])
+            user_receiver = User.objects.get(id=data['user-receiver-id'])
+            wallet_receiver = Wallet.objects.get(user=user_receiver)
+            if len(coins) >= data['amount']:    # Enough founds
+                for coin in coins:
+                    coin.wallet = wallet_receiver
+                    coin.save()
+            else:
+                return Response({'message': "Error: insufficient funds..."}, status=status.HTTP_401_UNAUTHORIZED)
+        except:
+            return Response({'message': "Error: transfer not made..."}, status=status.HTTP_401_UNAUTHORIZED)
+        serializer = serializer = WalletSerializer(wallet)
+        return Response({'message': "Success", 'wallet': serializer.data}, status=status.HTTP_202_ACCEPTED)
+        
