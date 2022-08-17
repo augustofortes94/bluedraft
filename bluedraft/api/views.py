@@ -103,12 +103,24 @@ class WalletAPI(APIView):
         return Response({'message': "Success", 'wallet': serializer.data}, status=status.HTTP_200_OK)
 
     @api_login_required
+    def put(self, request, *args, **kwargs):
+        token = jwt.decode(request.COOKIES['jwt'], os.getenv('SECRET_KEY'), algorithms=['HS256'])
+        try:
+            wallet = Wallet.objects.get(user__id=token['id'])
+            wallet.name = request.data['name']
+            wallet.save()
+        except Wallet.DoesNotExist:
+            return Response({'message': "Error: wallet not found..."}, status=status.HTTP_404_NOT_FOUND)
+        serializer = WalletSerializer(wallet)
+        return Response({'message': "Success", 'wallet': serializer.data}, status=status.HTTP_202_ACCEPTED)
+
+    @api_login_required
     def delete(self, request, *args, **kwargs):
         token = jwt.decode(request.COOKIES['jwt'], os.getenv('SECRET_KEY'), algorithms=['HS256'])
         try:
             wallet = Wallet.objects.get(user__id=token['id'])
         except Wallet.DoesNotExist:
-            return Response({'message': "Error: wallet not added..."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'message': "Error: wallet not added..."}, status=status.HTTP_400_BAD_REQUEST)
         Wallet.objects.filter(user__id=token['id']).delete()
         serializer = WalletSerializer(wallet)
         return Response({'message': "Success", 'wallet': serializer.data}, status=status.HTTP_202_ACCEPTED)
