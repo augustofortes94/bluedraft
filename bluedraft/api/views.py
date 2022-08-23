@@ -132,10 +132,14 @@ class WalletAPI(APIView):
             coins = Coin.objects.filter(wallet=wallet, name=data['coin'])
             wallet_receiver = Wallet.objects.get(user__id=data['user-receiver-id'])
             if len(coins) >= data['amount']:    # Enough founds
-                #for i in data['amount']:
+                count = 0
                 for coin in coins:
-                    coin.wallet = wallet_receiver
-                    coin.save()
+                    if count < data['amount']:  # Send the specified amount
+                        coin.wallet = wallet_receiver
+                        coin.save()
+                        count += 1
+                    else:
+                        break
             else:
                 return Response({'message': "Error: insufficient funds..."}, status=status.HTTP_401_UNAUTHORIZED)
         except Wallet.DoesNotExist:
