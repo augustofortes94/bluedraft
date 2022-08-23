@@ -1,7 +1,6 @@
 from xml.dom import ValidationErr
 import jwt
 import os
-import requests
 from .models import Coin, Wallet
 from django.contrib.auth.models import User
 from .serializers import CoinSerializer, WalletSerializer
