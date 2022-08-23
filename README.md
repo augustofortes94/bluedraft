@@ -3,7 +3,7 @@
 Esta es una api creada para el challenge de Bluedraft. La misma consta de una simple app en la cual se puede crear, editar, listar y eliminar tanto monedas como billeteras de usuarios. Utilice Django-Rest-Framework para la construccion de la API. Esta la hice mediante clases, utilizando "APIView" para poder controlar bien cada uno de los verbos HTTP que queria realizar a bajo nivel. El proyecto esta dividido en dos aplicaciones que interactuan entre ellas (api y user). La primera, "api" contiene todo lo que es la api para el manejo de las monedas y billeteras. Y la aplicacion "user" se encarga de todo lo que es el login y el registro de usuarios a la api.
 
 Construir y ejecutar app:
-    - docker-compose up
+    - docker-compose up --build
 
 Endpoints:
 
