@@ -132,6 +132,7 @@ class WalletAPI(APIView):
             coins = Coin.objects.filter(wallet=wallet, name=data['coin'])
             wallet_receiver = Wallet.objects.get(user__id=data['user-receiver-id'])
             if len(coins) >= data['amount']:    # Enough founds
+                #for i in data['amount']:
                 for coin in coins:
                     coin.wallet = wallet_receiver
                     coin.save()
@@ -139,5 +140,5 @@ class WalletAPI(APIView):
                 return Response({'message': "Error: insufficient funds..."}, status=status.HTTP_401_UNAUTHORIZED)
         except Wallet.DoesNotExist:
             return Response({'message': "Error: transfer not made..."}, status=status.HTTP_401_UNAUTHORIZED)
-        serializer = serializer = WalletSerializer(wallet)
+        serializer = WalletSerializer(wallet)
         return Response({'message': "Success", 'wallet': serializer.data}, status=status.HTTP_202_ACCEPTED)
