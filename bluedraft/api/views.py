@@ -1,6 +1,7 @@
 from xml.dom import ValidationErr
 import jwt
 import os
+import requests
 from .models import Coin, Wallet
 from django.contrib.auth.models import User
 from .serializers import CoinSerializer, WalletSerializer
@@ -34,8 +35,7 @@ class CoinAPI(APIView):
         try:
             wallet = Wallet.objects.get(id=request.data['wallet'])
             coin = Coin.objects.create(name=request.data['name'], wallet=wallet)
-        except Wallet.DoesNotExist:
-            print('primer except')
+        except (Wallet.DoesNotExist, KeyError):
             coin = Coin.objects.create(name=request.data['name'])
         except ValidationErr:
             return Response({'message': "Error: coin not added"}, status=status.HTTP_400_BAD_REQUEST)
